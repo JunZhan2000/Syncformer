@@ -117,6 +117,15 @@ class VGGSound(torch.utils.data.Dataset):
 
     def load_media(self, path):
         rgb, audio, meta = get_video_and_audio(path, get_meta=True, end_sec=self.max_clip_len_sec)
+        min_video_frames = 175
+        min_audio_samples = 112800
+        if rgb.shape[0] < min_video_frames:
+            rgb = torch.cat([rgb, rgb[-1:].repeat(min_video_frames - rgb.shape[0], 1, 1, 1)], dim=0)
+            logging.info(f'video length is too short, padding to {min_video_frames}, path: {path}')
+        
+        if audio.shape[0] < min_audio_samples:
+            audio = torch.cat([audio, audio[-1:].repeat(min_audio_samples - audio.shape[0])], dim=0)
+            logging.info(f'audio length is too short, padding to {min_audio_samples}, path: {path}')
         return rgb, audio, meta
 
     def make_split_files(self):

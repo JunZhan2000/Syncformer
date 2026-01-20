@@ -7,7 +7,7 @@ model:
       is_trainable: False
       target: model.modules.feat_extractors.audio.ast.AST
       params:
-        ckpt_path: null
+        ckpt_path: "/inspire/hdd/project/video-generation/public/jzhan/AnyTokenizer/ckpts/Syncformer/official/audioset/pretrain/epoch_best.pt"
         extract_features: True
         # feat_type: "last_hidden_state"  # 'pooler_output' 'CLS' 'last_hidden_state' 'last_hidden_state_no_AUX':
         max_spec_t: 66  # time dimension of the input spectrogram
@@ -19,7 +19,7 @@ model:
       is_trainable: False
       target: model.modules.feat_extractors.visual.motionformer.MotionFormer
       params:
-        ckpt_path: null
+        ckpt_path: "/inspire/hdd/project/video-generation/public/jzhan/AnyTokenizer/ckpts/Syncformer/official/audioset/pretrain/epoch_best.pt"
         extract_features: True
         factorize_space_time: True  # used if extract_features is True
         agg_space_module: 'TransformerEncoderLayer'  # 'AveragePooling' or 'TransformerEncoderLayer'
@@ -61,8 +61,8 @@ model:
 training:
   base_learning_rate: 2e-6
   base_batch_size: 16
-  num_workers: 6
-  num_epochs: 10000  # just a large number (early stopper with the `patience` will stop it anyway)
+  num_workers: 8
+  num_epochs: 1000  # just a large number (early stopper with the `patience` will stop it anyway)
   patience: 20
   to_max_metric: True
   metric_name: 'accuracy_1'
@@ -92,7 +92,7 @@ data:
   max_off_sec: 2
   crop_len_sec: 5
   step_size_seg: 0.5  # 1 for no overlap, 0.5 for 50% overlap
-  vids_path: 'PLACEHOLDER' # something that ends with 'CODEC_video_XXfps_YYYside_ZZZZZhz' or '..._25fps_...'
+  vids_path: '/inspire/hdd/project/video-generation/public/datasets/VGGSound/video_reencoded_rename' # something that ends with 'CODEC_video_XXfps_YYYside_ZZZZZhz' or '..._25fps_...'
   size_before_crop: 256  # video resolution -> size_before_crop resolution -> input_size (crop resolution)
   input_size: 224
   segment_size_vframes: 16
@@ -110,7 +110,7 @@ data:
   p_audio_aug: 0.0
   # changing `dataset` arguments here won't affect the init call. See train_utils.get_datasets
   dataset:
-    target: 'PLACEHOLDER'
+    target: 'dataset.vggsound.VGGSound'
     params:
       load_fixed_offsets_on: ['valid', 'test']
       vis_load_backend: 'read_video'
@@ -254,7 +254,7 @@ transform_sequence_test:
 logging:
   logdir: './logs/sync_models'
   log_code_state: True
-  log_frequency: 20
+  log_frequency: 1
   # patterns to ignore when backing up the code folder
   patterns_to_ignore: ['logs', '.git', '__pycache__', 'data', '*.pt', 'sbatch_logs', '*.mp4', '*.wav', '*.jpg', '*.gif', 'misc*']
   vis_segment_sim: True

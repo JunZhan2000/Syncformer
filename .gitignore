@@ -9,3 +9,6 @@ temp
 *.pyth
 todel
 .vscode
+output
+logs
+core.*

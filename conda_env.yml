@@ -1,4 +1,4 @@
-name: synchformer
+name: synchformer2
 channels:
   - huggingface
   - pytorch

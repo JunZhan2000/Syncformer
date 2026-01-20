@@ -115,7 +115,7 @@ training:
 
 data:
   dataset_type: sparsesync
-  vids_path: 'PLACEHOLDER' # something that ends with 'CODEC_video_XXfps_YYYside_ZZZZZhz' or '..._25fps_...'
+  vids_path: '/inspire/hdd/project/video-generation/public/datasets/VGGSound/video_reencoded_rename' # something that ends with 'CODEC_video_XXfps_YYYside_ZZZZZhz' or '..._25fps_...'
   size_before_crop: 256  # video resolution -> size_before_crop resolution -> input_size (crop resolution)
   input_size: 224
   segment_size_vframes: 16
@@ -133,7 +133,7 @@ data:
   step_size_seg: 1.0  # step size between segments in segments (1 = no overlap between segments, 0.5 = 50% overlap)
   # changing `dataset` arguments here won't affect the init call. See train_utils.get_datasets
   dataset:
-    target: 'PLACEHOLDER'
+    target: 'dataset.vggsound.VGGSound'
     params:
       load_fixed_offsets_on: []
       vis_load_backend: 'read_video'
@@ -248,15 +248,15 @@ transform_sequence_test:
       einops_order_rgb: "S T C H W -> S C T H W"
 
 logging:
-  logdir: './logs/avclip_models'
+  logdir: './logs/avclip_models/vggsound'
   log_code_state: True
-  log_frequency: 100
+  log_frequency: 10
   log_local: False
   delete_previous_checkpoint: False
   save_most_recent: True
   save_frequency: 0
   # patterns to ignore when backing up the code folder
   patterns_to_ignore: ['logs', '.git', '__pycache__', 'data', '*.pt', '*.pyth', 'sbatch_logs', '*.mp4', '*.wav', '*.jpg', '*.gif', 'misc*']
-  use_tboard: False
+  use_tboard: True
   use_wandb: False
   wandb_notes: null
