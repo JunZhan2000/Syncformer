@@ -198,7 +198,7 @@ def main(cfg):
             cfg.training.remote_sync_protocol
         )
         remote_sync_process.start()
-
+    print("we have started the remote sync process")
     if cfg.training.precision == 'fp16':
         logging.warning('It is recommended to use AMP mixed-precision instead of FP16. '
                         'FP16 support needs further verification and tuning, especially for train.')
