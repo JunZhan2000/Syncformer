@@ -15,7 +15,7 @@ model:
       target: model.modules.feat_extractors.audio.ast.AST
       params:
         # ckpt_path: null   # == from scratch
-        ckpt_path: "MIT/ast-finetuned-audioset-10-10-0.4593"
+        ckpt_path: "./ckpts/MIT/ast-finetuned-audioset"
         extract_features: True
         # feat_type: "last_hidden_state"  # 'pooler_output' 'CLS' 'last_hidden_state' 'last_hidden_state_no_AUX':
         max_spec_t: 66  # time dimension of the input spectrogram
@@ -30,9 +30,6 @@ model:
       is_trainable: True
       target: model.modules.feat_extractors.visual.motionformer.MotionFormer
       params:
-        # ckpt_path: null  # from scratch
-        # ckpt_path: "./model/modules/feat_extractors/visual/motionformer_src/ssv2_motionformer_224_16x4.pyth"
-        # ckpt_path: "./model/modules/feat_extractors/visual/motionformer_src/ssv2_joint_224_16x4.pyth"
         ckpt_path: "./model/modules/feat_extractors/visual/motionformer_src/ssv2_divided_224_16x4.pyth"
         extract_features: True
         factorize_space_time: True  # used if extract_features is True

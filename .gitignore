@@ -12,3 +12,5 @@ todel
 output
 logs
 core.*
+
+ckpts/
