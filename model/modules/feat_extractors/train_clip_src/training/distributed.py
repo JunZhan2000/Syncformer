@@ -83,6 +83,8 @@ def init_distributed_device(args):
             args.world_size = torch.distributed.get_world_size()
             args.rank = torch.distributed.get_rank()
         args.distributed = True
+        # add
+        torch.distributed.barrier() 
 
     if torch.cuda.is_available():
         if args.distributed and not args.training.no_set_device_rank:

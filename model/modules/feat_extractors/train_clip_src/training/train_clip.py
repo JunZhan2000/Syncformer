@@ -80,6 +80,7 @@ class DistributedDataParallel(torch.nn.parallel.DistributedDataParallel):
 
 
 def main(cfg):
+    print("we have entered train_clip.py main function")
     if torch.cuda.is_available():
         # This enables tf32 on Ampere GPUs which is only 8% slower than
         # float16 and almost as accurate as float32
@@ -90,6 +91,8 @@ def main(cfg):
 
     # fully initialize distributed device environment
     device = init_distributed_device(cfg)
+    
+    print("we have initialized distributed device environment")
 
     # get the name of the experiments
     date_str = cfg.get('start_time', get_curr_time_w_random_shift())
@@ -98,6 +101,8 @@ def main(cfg):
         date_str = broadcast_object(cfg, date_str)
     cfg.name = date_str
 
+    print("we have got the name of the experiments")
+    
     resume_latest = cfg.training.resume == 'latest'
     log_base_path = os.path.join(cfg.logging.logdir, cfg.name)
     cfg.log_path = None
@@ -109,6 +114,8 @@ def main(cfg):
         #     print(f"Warning. Experiment already exists. Resuming from {cfg.log_path}, perhaps not latest")
         #     return -1
 
+    print("we have setup the text logger")
+    
     # Setup text logger
     cfg.log_level = logging.DEBUG if cfg.debug else logging.INFO
     setup_logging(cfg.log_path, cfg.log_level)
@@ -122,6 +129,8 @@ def main(cfg):
                 os.makedirs(dirname, exist_ok=True)
     else:
         cfg.tensorboard_path = ''
+    
+    print("we have setup the wandb, tensorboard, checkpoint logging")
 
     if resume_latest:
         resume_from = None
@@ -157,10 +166,10 @@ def main(cfg):
             # sync found checkpoint path to all ranks
             resume_from = broadcast_object(cfg, resume_from)
         cfg.training.resume = resume_from
-
+    print("we have checked for the latest checkpoint")
     if cfg.logging.log_code_state and is_master(cfg):
         copy_codebase(cfg)
-
+    print("we have copied the codebase")
     # start the sync proces if remote-sync is not None
     remote_sync_process = None
     if is_master(cfg) and cfg.training.remote_sync is not None:
@@ -244,6 +253,9 @@ def main(cfg):
         cfg_path = os.path.join(cfg.logging.logdir, cfg.name, cfg_fname)
         OmegaConf.save(cfg, cfg_path)
         logging.info(OmegaConf.to_yaml(cfg))
+    
+    if cfg.distributed:
+        torch.distributed.barrier()
 
     if cfg.distributed:
         if cfg.training.use_bn_sync:
@@ -303,6 +315,10 @@ def main(cfg):
     # initialize datasets
     data = get_data(cfg, transforms, epoch=start_epoch)
     assert len(data), 'At least one train or eval dataset must be specified.'
+    
+    # add
+    if cfg.distributed:
+        torch.distributed.barrier()
 
     # create scheduler if train
     scheduler = None
@@ -352,6 +368,10 @@ def main(cfg):
             wandb.watch(model, log='all')
         wandb.save(cfg_path)
         logging.debug('Finished loading wandb.')
+        
+    # add
+    if cfg.distributed:
+        torch.distributed.barrier()
 
     if 'train' not in data and cfg.training.run_shifted_win_val:
         # change this with coneectin to other mentions of evaluate

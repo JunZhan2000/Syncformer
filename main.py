@@ -5,6 +5,8 @@ from omegaconf import OmegaConf
 from scripts.train_utils import get_curr_time_w_random_shift
 from utils.utils import cfg_sanity_check_and_patch
 
+print("we have entered main.py")
+
 def set_env_variables():
     # checks if not run with torchrun or torch.launch.distributed
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:

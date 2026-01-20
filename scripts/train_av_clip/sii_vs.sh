@@ -28,8 +28,10 @@ echo "WORLD_SIZE: ${WORLD_SIZE}"
 
 # ================= NCCL 配置 =================
 export NCCL_IB_TIMEOUT=30
-export NCCL_TIMEOUT=1800
+# export NCCL_TIMEOUT=1800
+export NCCL_TIMEOUT=120
 export TORCH_NCCL_BLOCKING_WAIT=1
+export NCCL_IB_DISABLE=1
 
 
 export NOW=$(date +"%Y-%m-%dT%H-%M-%S")
