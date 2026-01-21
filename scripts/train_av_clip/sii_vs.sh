@@ -3,7 +3,7 @@
 # ================= 环境初始化 =================
 source /inspire/hdd/project/video-generation/public/jzhan/env/.bashrc
 which python
-conda activate synchformer2  # 根据实际环境名修改
+conda activate synchformer_new  # 根据实际环境名修改
 which python
 
 cd /inspire/hdd/project/video-generation/public/jzhan/AnyTokenizer/Synchformer  # 根据实际路径修改
