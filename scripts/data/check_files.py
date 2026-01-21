@@ -73,7 +73,7 @@ def main():
     print(f"\n缺失文件数量: {len(missing_files)}")
     
     # 需要处理的文件列表
-    data_dir = "/inspire/hdd/project/video-generation/public/jzhan/AnyTokenizer/Synchformer/data"
+    data_dir = "./data"
     txt_files = [
         os.path.join(data_dir, "vggsound_test.txt"),
         os.path.join(data_dir, "vggsound_train.txt"),
