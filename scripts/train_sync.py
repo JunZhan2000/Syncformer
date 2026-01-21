@@ -62,7 +62,7 @@ def train(cfg):
     early_stopper = EarlyStopper(cfg.training.patience, cfg.training.to_max_metric, cfg.training.metric_name)
 
     # the scaller for the loss. Helps to avoid precision underflow during half prec training
-    scaler = torch.cuda.amp.GradScaler()
+    scaler = torch.amp.GradScaler('cuda')
 
     # this chunk has a complicate logic but it simply loads pre-trained ckpt during finetuning/resuming/test
     if cfg.training.run_test_only or cfg.training.resume or cfg.training.finetune:

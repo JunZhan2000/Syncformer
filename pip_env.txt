@@ -1,0 +1,7 @@
+torchaudio=2.0.0
+torchtriton=2.0.0
+torchvision=0.15.0
+torch
+
+transformers==4.27.4 datasets==2.10.1
+timm==0.6.12

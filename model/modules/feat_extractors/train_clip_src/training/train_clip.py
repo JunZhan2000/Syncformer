@@ -14,20 +14,14 @@ import numpy as np
 from omegaconf import OmegaConf
 import torch
 from torch import optim
-from torch.cuda.amp import GradScaler
+from torch.amp import GradScaler
 
 from model.modules.feat_extractors.train_clip_src.open_clip.factory import create_model
 from scripts.train_utils import EarlyStopper, get_curr_time_w_random_shift, get_transforms
 
-try:
-    import wandb
-except ImportError:
-    wandb = None
+import wandb
 
-try:
-    import torch.utils.tensorboard as tensorboard
-except ImportError:
-    tensorboard = None
+import torch.utils.tensorboard as tensorboard
 
 
 from open_clip import trace_model
@@ -86,9 +80,11 @@ def main(cfg):
         # float16 and almost as accurate as float32
         # This was a default in pytorch until 1.12
         torch.backends.cuda.matmul.allow_tf32 = True
-        torch.backends.cudnn.benchmark = True
+        torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = False
-
+        # torch.backends.cudnn.benchmark = False
+        # torch.backends.cudnn.deterministic = True
+    print("we have set the backend for the cuda and cudnn")
     # fully initialize distributed device environment
     device = init_distributed_device(cfg)
     
@@ -289,7 +285,10 @@ def main(cfg):
                                 betas=cfg.training.optimizer.betas,
                                 eps=1e-08,)
 
-        scaler = GradScaler() if cfg.training.precision == "amp" else None
+        # add
+        scaler = GradScaler('cuda') if cfg.training.precision == "amp" else None
+        # scaler = GradScaler('cuda', init_scale=2.**16, growth_factor=2.0, backoff_factor=0.5) if cfg.training.precision == "amp" else None
+        
 
     # optionally resume from a checkpoint
     start_epoch = 0

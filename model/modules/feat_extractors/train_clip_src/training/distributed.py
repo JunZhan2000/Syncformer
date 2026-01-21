@@ -60,42 +60,51 @@ def init_distributed_device(args):
     args.world_size = 1
     args.rank = 0  # global rank
     args.local_rank = 0
+    print("we have initialized distributed device environment")
     if is_using_distributed():
         if 'SLURM_PROCID' in os.environ:
+            print("we are using SLURM for distributed training")
             # DDP via SLURM
             args.local_rank, args.rank, args.world_size = world_info_from_env()
             # SLURM var -> torch.distributed vars in case needed
             os.environ['LOCAL_RANK'] = str(args.local_rank)
             os.environ['RANK'] = str(args.rank)
             os.environ['WORLD_SIZE'] = str(args.world_size)
+            print("we have set the environment variables for the SLURM distributed training")
             torch.distributed.init_process_group(
                 backend=args.training.dist_backend,
                 init_method=args.training.dist_url,
                 world_size=args.world_size,
                 rank=args.rank,
             )
+            print("we have initialized the distributed process group for the SLURM distributed training")
         else:
             # DDP via torchrun, torch.distributed.launch
             args.local_rank, _, _ = world_info_from_env()
+            print("we are using torchrun for distributed training")
             torch.distributed.init_process_group(
                 backend=args.training.dist_backend,
                 init_method=args.training.dist_url)
+            print("we have initialized the distributed process group for the torchrun distributed training")
             args.world_size = torch.distributed.get_world_size()
             args.rank = torch.distributed.get_rank()
         args.distributed = True
+        print("we have set the distributed flag to True")
         # add
         torch.distributed.barrier() 
-
+        print("we have created a barrier for the distributed training")
     if torch.cuda.is_available():
         if args.distributed and not args.training.no_set_device_rank:
             device = 'cuda:%d' % args.local_rank
         else:
             device = 'cuda:0'
         torch.cuda.set_device(device)
+        print("we have set the device to the local rank")
     else:
         device = 'cpu'
     args.device = device
     device = torch.device(device)
+    print("we have set the device to the local rank and returned the device")
     return device
 
 

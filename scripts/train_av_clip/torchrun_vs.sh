@@ -11,7 +11,7 @@ torchrun \
   --nproc_per_node=$NUM_GPUS \
     main.py \
     start_time="$NOW" \
-    config="./configs/sync.yaml" \
+    config="./configs/segment_avclip.yaml" \
     logging.use_wandb=True \
     training.patience=10
 

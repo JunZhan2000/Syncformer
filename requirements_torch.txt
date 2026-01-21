@@ -1,0 +1,7 @@
+{% comment %} pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu126 {% endcomment %}
+
+torchaudio=2.0.0
+timm==0.6.12
+transformers=4.27.4=py_0
+datasets=2.10.1=pyhd8ed1ab_0
+tokenizers==0.11.4

@@ -9,7 +9,21 @@ which python
 cd /inspire/hdd/project/video-generation/public/jzhan/AnyTokenizer/Synchformer  # 根据实际路径修改
 
 # ================= 分布式环境变量映射 =================
-export MASTER_ADDR=${PET_MASTER_ADDR}
+# 尝试将主机名解析为 IP 地址
+MASTER_IP=$(getent hosts ${PET_MASTER_ADDR} | awk '{print $1}' | head -n 1)
+if [ -z "$MASTER_IP" ]; then
+    # 如果解析失败，尝试用 nslookup 或者直接用原值
+    echo "Warning: Cannot resolve ${PET_MASTER_ADDR}, trying nslookup..."
+    MASTER_IP=$(nslookup ${PET_MASTER_ADDR} 2>/dev/null | grep -A1 'Name:' | grep 'Address:' | awk '{print $2}')
+fi
+
+if [ -z "$MASTER_IP" ]; then
+    echo "Error: Cannot resolve MASTER_ADDR: ${PET_MASTER_ADDR}"
+    exit 1
+fi
+
+export MASTER_ADDR=${MASTER_IP}
+# export MASTER_ADDR=${PET_MASTER_ADDR}
 export MASTER_PORT=${PET_MASTER_PORT}
 
 NNODES=${PET_NNODES}
