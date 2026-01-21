@@ -14,10 +14,10 @@ def reencode_video(path, output_dir, vfps=25, afps=16000, in_size=256):
         
         new_path = Path(output_dir) / f'{Path(path).stem}.mp4'
         new_path.parent.mkdir(exist_ok=True, parents=True)
-        new_path = str(new_path)
-        
         if new_path.exists():
             return (True, Path(path).name, None)
+        new_path = str(new_path)
+        
         
         cmd = f'{ffmpeg_path}'
         cmd += ' -hide_banner -loglevel panic'
